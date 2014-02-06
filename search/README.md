@@ -14,6 +14,8 @@ Instructions
 Version
 =======
 
+* v2.3.0  -  Internationalisation
+* v2.2.0  -  Passage des recherches en GET pour exploitation des outils fournis dans les navigateurs (raccourcis de recherche)
 * v2.1.0  -  Ajout de la recherche depuis le menu de Leed
 * v2.0.0  -  Ajout des boutons pour mettre en lu/non lu. et favoris
 * v1.1.0  -  Gestion des css lié à la version Leed
