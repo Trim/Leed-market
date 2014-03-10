@@ -7,7 +7,7 @@ define('PLUGIN_ENABLED','1');
 define('KEY','".$key."');
 ?>";
 
-file_put_contents('plugins/api/constantAPI.php', $constant);
+file_put_contents(Plugin::path().'constantAPI.php', $constant);
 
 function genererKeyAPI()
 {

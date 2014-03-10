@@ -8,7 +8,7 @@
 @description Le plugin API permet de gérer ses flux Leed via une application externe
 */
 
-require_once('./plugins/api/constantAPI.php');
+require_once('constantAPI.php');
 
 function api_plugin_setting_link(&$myUser){
 echo '<li><a class="toggle" href="#leedAPIBloc">'._t('P_LEEDAPI_TITLE').'</a></li>';
