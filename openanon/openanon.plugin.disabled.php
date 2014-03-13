@@ -14,7 +14,7 @@ function openanon_plugin_button(&$event){
 	$query = mysql_query($requete);
 	$result = mysql_fetch_row($query);
 	$link = $result[0];
-	echo '<a title="'._t('P_OPENANON_TITLE').'" target="_blank" href="'.$link.'" rel="noreferrer">'._t('P_OPENANON_LINKNAME').'</a>';
+	echo '<a title="'._t('P_OPENANON_TITLE').'" target="_blank" href="'.$link.'" rel="noreferrer">'._t('P_OPENANON_LINKNAME').'</a> ';
 }
 
 Plugin::addHook("event_post_top_options", "openanon_plugin_button");  
