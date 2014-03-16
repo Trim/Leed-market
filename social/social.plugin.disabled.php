@@ -4,7 +4,7 @@
 @author Cobalt74 <cobalt74@gmail.com>
 @link http://www.cobestran.com
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-@version 3.6.0
+@version 3.7.0
 @description Le plugin Social permet de partager les news avec son réseau social préféré (Twitter, Google+, Facebook, Delicious, Shaarli, Pocket, Instapaper, Mail, LinkedIn, Wallabag)
 */
 
@@ -22,8 +22,9 @@ function social_plugin_AddButton(&$event){
 
   $configurationManager = new Configuration();
   $configurationManager->getAll();
-  echo '<div class="social_group">
-          <div class="social_divbut" id="maindiv'.$eventId.'" onclick="social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');">'._t('P_SOCIAL_SHARE_PLUS').'</div>
+
+   echo '<div class="social_group">
+        <div class="social_divbut" id="maindiv'.$eventId.'" onclick="social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');">'._t('P_SOCIAL_SHARE_PLUS').'</div>
         </div>
         <div class="social_gdiv" id="'.$eventId.'" style="display:none">
             '.($configurationManager->get('plugin_social_twitter')?'<div onclick="openURL(\'https://twitter.com/share?url='.rawurlencode($link).'&text='.rawurlencode($title).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">Twitter</div>':'').'
@@ -36,6 +37,7 @@ function social_plugin_AddButton(&$event){
             '.($configurationManager->get('plugin_social_mail')?'<div onclick="openURL(\'mailto:?subject='.rawurlencode($title).'&body='.rawurlencode($link).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">E-mail</div>':'').'
             '.($configurationManager->get('plugin_social_linkedin')?'<div onclick="openURL(\'http://www.linkedin.com/shareArticle?url='.rawurlencode($link).'&title='.rawurlencode($title).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">LinkedIn</div>':'').'
             '.($myUser!=false?($configurationManager->get('plugin_social_wallabag')?'<div onclick="openURL(\''.$configurationManager->get('plugin_social_wallabag_link').'?action=add&url='.base64_encode($link).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">Wallabag</div>':''):'').'
+            '.($myUser!=false?($configurationManager->get('plugin_social_diigo')?'<div onclick="OpenUrlWithPostParameters(\'https://secure.diigo.com/api/v2/bookmarks\',\''.$configurationManager->get('plugin_social_diigo_apikey').'\',\''.$link.'\',\''.$title.'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">Diigo</div>':''):'').'
         </div>';
 }
 
@@ -123,6 +125,20 @@ function social_plugin_setting_bloc(&$myUser){
 		</p>
 		</section>
 
+        <section class="preferenceBloc">
+		<h3>'._t('P_SOCIAL_SHARE_APPLI').' Diigo</h3>
+		<h4>'._t('P_SOCIAL_DIIGO_DESC').'</h4>
+		<p>
+		<label for="social_diigo">'._t('P_SOCIAL_SHARE_ON').' Diigo :</label>
+		<input type="radio" '.($configurationManager->get('plugin_social_diigo')?'checked="checked"':'').' value=1 id="socialdiigoYes" name="socialdiigo"><label>'._t('P_SOCIAL_YES').'</label>
+		<input type="radio" '.($configurationManager->get('plugin_social_diigo')?'':'checked="checked"').' value=0 id="socialdiigoNo" name="socialdiigo"><label>'._t('P_SOCIAL_NO').'</label>
+		</p>
+		<p>
+		<label for="social_diigo_apikey">'._t('P_SOCIAL_APIKEY').' Diigo :</label>
+		<input style="width:50%;" type="text" placeholder="API Key" value="'.$configurationManager->get('plugin_social_diigo_apikey').'" id="plugin_social_diigo_apikey" name="plugin_social_diigo_apikey" />
+		</p>
+		</section>
+
 		<input type="submit" class="button" value="'._t('P_SOCIAL_BTN_SAVE').'"><br/>
 		<p>
 		'._t('P_SOCIAL_COMMENT_AUTHOR').'
@@ -149,7 +165,9 @@ function social_plugin_update($_){
         $configurationManager->put('plugin_social_linkedin',$_['socialLinkedIn']);
 		$configurationManager->put('plugin_social_wallabag',$_['socialwallabag']);
 		$configurationManager->put('plugin_social_wallabag_link', $_['plugin_social_wallabag_link']);
-		$_SESSION['configuration'] = null;
+        $configurationManager->put('plugin_social_diigo',$_['socialdiigo']);
+        $configurationManager->put('plugin_social_diigo_apikey', $_['plugin_social_diigo_apikey']);
+        $_SESSION['configuration'] = null;
 
 		header('location: settings.php#socialBloc');
 	}

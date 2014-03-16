@@ -17,3 +17,37 @@ function social_toggle_div(main, id) {
   }
 }
 
+
+function OpenUrlWithPostParameters(action, key, url, title){
+
+    var mapForm = document.createElement("form");
+    mapForm.target = "Map";
+    mapForm.method = "POST"; // or "post" if appropriate
+    mapForm.action = action;
+
+    var mapInput = document.createElement("input");
+    mapInput.type = "text";
+    mapInput.name = "key";
+    mapInput.value = key;
+    mapForm.appendChild(mapInput);
+
+    document.body.appendChild(mapForm);
+
+    var mapInput = document.createElement("input");
+    mapInput.type = "text";
+    mapInput.name = "url";
+    mapInput.value = url;
+    mapForm.appendChild(mapInput);
+
+    document.body.appendChild(mapForm);
+
+    var mapInput = document.createElement("input");
+    mapInput.type = "text";
+    mapInput.name = "title";
+    mapInput.value = title;
+    mapForm.appendChild(mapInput);
+
+    document.body.appendChild(mapForm);
+
+    mapForm.submit();
+}

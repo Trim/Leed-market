@@ -1,6 +1,8 @@
 {
+ "P_SOCIAL_APIKEY":"API Key from",
  "P_SOCIAL_BTN_SAVE":"Save",
  "P_SOCIAL_COMMENT_AUTHOR":"@Cobalt74 : If you want I integrate a new link to share applications, I remain available on <a href='https://github.com/ldleman/Leed-market/'>GitHub project</a>",
+ "P_SOCIAL_DIIGO_DESC":"Diigo allows you to classify, index your favorites and access to other users. (<a href='http://www.diigo.com'>website</a>)",
  "P_SOCIAL_LINK":"Link to",
  "P_SOCIAL_NO":"No",
  "P_SOCIAL_PREF_TITLE":"Enabling sharing buttons",

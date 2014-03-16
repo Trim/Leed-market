@@ -15,6 +15,7 @@ Voici pour l'instant la liste des réseaux et applications disponibles.
 - E-mail
 - Linkedin
 - Wallabag
+- Diigo
 
 Je reste à dispo sur le GitHub du projet si vous souhaitez ajouter un réseau social connu ou une application libre intéressante.
 
@@ -28,6 +29,7 @@ Instructions
 Version
 =======
 
+* v3.7.0  -  Ajout partage sur Diigo
 * v3.6.0  -  Internationalisation
 * v3.5.3  -  Sécurisation de l'administration
 * v3.5.2  -  Modification de Poche en Wallabag
