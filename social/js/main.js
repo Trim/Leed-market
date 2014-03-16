@@ -36,7 +36,7 @@ function OpenUrlWithPostParameters(action, key, url, title){
     var mapInput = document.createElement("input");
     mapInput.type = "text";
     mapInput.name = "url";
-    mapInput.value = url;
+    mapInput.value = decodeURIComponent(url.replace(/\+/g, ' '));
     mapForm.appendChild(mapInput);
 
     document.body.appendChild(mapForm);
@@ -44,7 +44,7 @@ function OpenUrlWithPostParameters(action, key, url, title){
     var mapInput = document.createElement("input");
     mapInput.type = "text";
     mapInput.name = "title";
-    mapInput.value = title;
+    mapInput.value = decodeURIComponent(title.replace(/\+/g, ' '));;
     mapForm.appendChild(mapInput);
 
     document.body.appendChild(mapForm);

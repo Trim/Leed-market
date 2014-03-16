@@ -29,6 +29,7 @@ Instructions
 Version
 =======
 
+* v3.7.1  -  Diigo, correction d'encodage.
 * v3.7.0  -  Ajout partage sur Diigo
 * v3.6.0  -  Internationalisation
 * v3.5.3  -  Sécurisation de l'administration

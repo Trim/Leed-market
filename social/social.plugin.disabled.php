@@ -4,7 +4,7 @@
 @author Cobalt74 <cobalt74@gmail.com>
 @link http://www.cobestran.com
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-@version 3.7.0
+@version 3.7.1
 @description Le plugin Social permet de partager les news avec son réseau social préféré (Twitter, Google+, Facebook, Delicious, Shaarli, Pocket, Instapaper, Mail, LinkedIn, Wallabag)
 */
 
@@ -37,7 +37,7 @@ function social_plugin_AddButton(&$event){
             '.($configurationManager->get('plugin_social_mail')?'<div onclick="openURL(\'mailto:?subject='.rawurlencode($title).'&body='.rawurlencode($link).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">E-mail</div>':'').'
             '.($configurationManager->get('plugin_social_linkedin')?'<div onclick="openURL(\'http://www.linkedin.com/shareArticle?url='.rawurlencode($link).'&title='.rawurlencode($title).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">LinkedIn</div>':'').'
             '.($myUser!=false?($configurationManager->get('plugin_social_wallabag')?'<div onclick="openURL(\''.$configurationManager->get('plugin_social_wallabag_link').'?action=add&url='.base64_encode($link).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">Wallabag</div>':''):'').'
-            '.($myUser!=false?($configurationManager->get('plugin_social_diigo')?'<div onclick="OpenUrlWithPostParameters(\'https://secure.diigo.com/api/v2/bookmarks\',\''.$configurationManager->get('plugin_social_diigo_apikey').'\',\''.$link.'\',\''.$title.'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">Diigo</div>':''):'').'
+            '.($myUser!=false?($configurationManager->get('plugin_social_diigo')?'<div onclick="OpenUrlWithPostParameters(\'https://secure.diigo.com/api/v2/bookmarks\',\''.$configurationManager->get('plugin_social_diigo_apikey').'\',\''.rawurlencode($link).'\',\''.rawurlencode($title).'\');social_toggle_div(\'maindiv'.$eventId.'\',\''.$eventId.'\');" class="social_div">Diigo</div>':''):'').'
         </div>';
 }
 
