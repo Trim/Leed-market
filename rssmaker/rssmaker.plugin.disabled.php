@@ -5,17 +5,13 @@
 @author Cobalt74 <cobalt74@gmail.com>
 @link http://blog.idleman.fr
 @licence DWTFYW
-@version 2.0.0
+@version 2.1.0
 @description Créé un flux rss par dossiers de flux, ceci permet de créer de nouveaux flux pour une consultation plus synthétique
 */
 
 
 function rssmaker_plugin_folder_link(&$folder){
     echo '<a onclick="window.location=\'action.php?action=show_folder_rss&name='.$folder->getName().'&id='.$folder->getId().'\'" style="color:#cecece;font-size:10px;margin:5px 0 0 5px ;">Rss</a>';
-}
-
-function rssmaker_plugin_unread_link(){
-    echo '<a onclick="window.location=\'action.php?action=show_unread_rss\'" style="cursor:pointer;color:#cecece;font-size:10px;margin:5px 0 0 5px ;">Unread Rss</a>';
 }
 
 function rssmaker_plugin_compare($a, $b) {
@@ -92,13 +88,15 @@ function rssmaker_plugin_unread_action($_,$myUser){
         $eventManager = new Event();
         $items = $eventManager->loadAll(array("unread"=>1));
 
-        $link = 'http://projet.idleman.fr/leed';
+        $ConfigManager = new Configuration();
+        $ConfigManager->getAll();
+        $link = $ConfigManager->get('root');
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
 	<channel>
 				<title>Leed ('._t("UNREAD").')</title>
-				<atom:link href="http://localhost/leed/action.php?action=show_unread_rss" rel="self" type="application/rss+xml"/>
+				<atom:link href="'.$link.'action.php?action=show_unread_rss" rel="self" type="application/rss+xml"/>
 				<link>'.$link.'</link>
 				<description>Aggrégation des flux non lus</description>
 				<language>fr-fr</language>
@@ -112,9 +110,9 @@ function rssmaker_plugin_unread_action($_,$myUser){
         usort($items, 'rssmaker_plugin_compare_event');
         foreach($items as $item){
            $xml .= '<item>
-				<title>'.($item->getTitle()).'></title>
+				<title><![CDATA['.html_entity_decode($item->getTitle()).']]></title>
 				<link>'.$item->getLink().'</link>
-				<pubDate>'.date('r', gmstrftime(strtotime($item->getPubdate()))).'</pubDate>
+				<pubDate>'.date('r', gmstrftime($item->getPubdate())).'</pubDate>
 				<guid isPermaLink="true">'.$item->getLink().'</guid>
 
 				<description>
@@ -122,7 +120,7 @@ function rssmaker_plugin_unread_action($_,$myUser){
 				]]>
 				</description>
 
-				<content:encoded><![CDATA['.htmlentities($item->getDescription()).']]></content:encoded>
+				<content:encoded><![CDATA['.$item->getDescription().']]></content:encoded>
 				<dc:creator>'.(''==$item->getCreator()? 'Anonyme': $item->getCreator()).'</dc:creator>
 				</item>';
         }
@@ -131,7 +129,18 @@ function rssmaker_plugin_unread_action($_,$myUser){
     }
 }
 Plugin::addHook("menu_pre_folder_link", "rssmaker_plugin_folder_link");
-Plugin::addHook("menu_post_header_options","rssmaker_plugin_unread_link");
+$ConfigManager = new Configuration();
+$ConfigManager->getAll();
+$link_head = $ConfigManager->get('root').'action.php?action=show_unread_rss';
+Plugin::addLink("alternate",$link_head, "application/rss+xml", "Unread RSS" );
 Plugin::addHook("action_post_case", "rssmaker_plugin_action");
 Plugin::addHook("action_post_case", "rssmaker_plugin_unread_action");
+
+$folderManager = new Folder();
+$folders = $folderManager->loadAll(array());
+foreach ($folders as $folder) {
+    $link_head = $ConfigManager->get('root').'action.php?action=show_folder_rss&name='.$folder->getName().'&id='.$folder->getId();
+    Plugin::addLink("alternate",$link_head, "application/rss+xml", $folder->getName() );
+}
+
 ?>
