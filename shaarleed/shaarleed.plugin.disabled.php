@@ -4,7 +4,7 @@
 @author Idleman <idleman@idleman.fr>
 @link http://blog.idleman.fr
 @licence WTFPL
-@version 3.0.0
+@version 3.0.1
 @description Le plugin Shaarleed permet de partager un lien d'evenement directement sur son script <a target="_blank" href="http://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a>
 */
 
@@ -50,9 +50,9 @@ function shaarleed_plugin_setting_bloc(&$myUser){
 }
 
 function shaarleed_plugin_update($_){
-	$configurationManager = new Configuration();
 	if($_['action']=='shaarleed_update'){
-		$configurationManager->put('plugin_shaarli_link',$_['plugin_shaarli_link']);
+        $configurationManager = new Configuration();
+        $configurationManager->put('plugin_shaarli_link',$_['plugin_shaarli_link']);
 		$_SESSION['configuration'] = null;
 
 		header('location: settings.php');

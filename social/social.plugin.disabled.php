@@ -4,7 +4,7 @@
 @author Cobalt74 <cobalt74@gmail.com>
 @link http://www.cobestran.com
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-@version 3.7.1
+@version 3.7.2
 @description Le plugin Social permet de partager les news avec son réseau social préféré (Twitter, Google+, Facebook, Delicious, Shaarli, Pocket, Instapaper, Mail, LinkedIn, Wallabag)
 */
 
@@ -149,11 +149,12 @@ function social_plugin_setting_bloc(&$myUser){
 }
 
 function social_plugin_update($_){
-	$configurationManager = new Configuration();
-	$configurationManager->getAll();
 
 	if($_['action']=='social_update'){
-		$configurationManager->put('plugin_social_twitter',$_['socialTwitter']);
+        $configurationManager = new Configuration();
+        $configurationManager->getAll();
+
+        $configurationManager->put('plugin_social_twitter',$_['socialTwitter']);
 		$configurationManager->put('plugin_social_googleplus',$_['socialGooglePlus']);
 		$configurationManager->put('plugin_social_facebook',$_['socialFacebook']);
 		$configurationManager->put('plugin_social_delicious',$_['socialDelicious']);

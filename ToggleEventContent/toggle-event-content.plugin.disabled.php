@@ -4,7 +4,7 @@
 @author Forty-Six <Forty-Six>
 @link https://github.com/Forty-Six
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-@version 0.5.2
+@version 0.5.3
 @description Ce plugin ajoute un bouton à chaque article pour en afficher ou non le contenu
 */
 
@@ -45,11 +45,11 @@ function FS_toggleEventContent_SettingForm(&$myUser) {
 // Fonction de mise à jour de la table de configuration
 function toggleEventContent_Update($_) {
 
-	$config = new Configuration();
-	$config->getAll();
-	
 	if($_['action'] == 'toggleEventContent_update') {
-		$config->put('toggleEventContent_default',$_['toggleEventContent_default']);
+        $config = new Configuration();
+        $config->getAll();
+
+        $config->put('toggleEventContent_default',$_['toggleEventContent_default']);
 		$_SESSION['configuration'] = null;
 
 //		header('location: settings.php#toggleEventContent');

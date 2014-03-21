@@ -4,7 +4,7 @@
 @author Cobalt74 <cobalt74@gmail.com>
 @link http://www.cobestran.com
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-@version 1.1.0
+@version 1.1.1
 @description Ce plugin permet de contruire son propre thème en ajoutant du css. 
 */
 
@@ -60,11 +60,12 @@ function getCSSMaker(){
 }
 
 function zcssleedmaker_plugin_update($_){
-	$configurationManager = new Configuration();
-	$configurationManager->getAll();
 
 	if($_['action']=='zcssleedmaker_update'){
-		$configurationManager->put('plugin_cssLeedMaker_css',$_['plugin_cssLeedMaker_css']);
+        $configurationManager = new Configuration();
+        $configurationManager->getAll();
+
+        $configurationManager->put('plugin_cssLeedMaker_css',$_['plugin_cssLeedMaker_css']);
 		$configurationManager->put('plugin_cssLeedMaker_addcss',rawurlencode($_['plugin_cssLeedMaker_addcss']));
 		$_SESSION['configuration'] = null;
 
