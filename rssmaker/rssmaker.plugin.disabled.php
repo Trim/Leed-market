@@ -2,7 +2,7 @@
 /*
 @name Rss Maker
 @author Idleman <idleman@idleman.fr>
-@author Cobalt74 <cobalt74@gmail.com>
+@author Cobalt74 <http://www.cobestran.com>
 @link http://blog.idleman.fr
 @licence DWTFYW
 @version 2.1.0

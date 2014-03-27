@@ -2,7 +2,7 @@
 /*
 @name OneSync
 @author Idleman <idleman@idleman.fr>
-@author Cobalt74 <cobalt74@gmail.com>
+@author Cobalt74 <http://www.cobestran.com>
 @link http://blog.idleman.fr
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
 @version 1.3.0
