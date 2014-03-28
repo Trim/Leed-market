@@ -5,8 +5,8 @@
 @author Cobalt74 <http://www.cobestran.com>
 @link http://blog.idleman.fr
 @licence DWTFYW
-@version 2.1.0
-@description Créé un flux rss par dossiers de flux, ceci permet de créer de nouveaux flux pour une consultation plus synthétique
+@version 2.2.0
+@description Créé un flux rss par dossiers de flux, un flux sur les non lus et un flux sur les favoris pour une consultation plus synthétique ou sur d'autres outils
 */
 
 
@@ -80,6 +80,8 @@ function rssmaker_plugin_action($_,$myUser){
     }
 
 }
+
+
 function rssmaker_plugin_unread_action($_,$myUser){
 
     if ($_['action']=='show_unread_rss') {
@@ -128,13 +130,67 @@ function rssmaker_plugin_unread_action($_,$myUser){
         echo($xml);
     }
 }
+
+function rssmaker_plugin_favorite_action($_,$myUser){
+
+    if ($_['action']=='show_favorite_rss') {
+
+        header('Content-Type: text/xml; charset=utf-8');
+        $eventManager = new Event();
+        $items = $eventManager->loadAll(array("favorite"=>1));
+
+        $ConfigManager = new Configuration();
+        $ConfigManager->getAll();
+        $link = $ConfigManager->get('root');
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+	<channel>
+				<title>Leed ('._t("FAVORITES").')</title>
+				<atom:link href="'.$link.'action.php?action=show_unread_rss" rel="self" type="application/rss+xml"/>
+				<link>'.$link.'</link>
+				<description>Aggrégation des flux non lus</description>
+				<language>fr-fr</language>
+				<copyright>DWTFYW</copyright>
+				<pubDate>'.date('r', gmstrftime(time())) .'</pubDate>
+				<lastBuildDate>'.date('r', gmstrftime(time())) .'</lastBuildDate>
+				<sy:updatePeriod>hourly</sy:updatePeriod>
+				<sy:updateFrequency>1</sy:updateFrequency>
+				<generator>Leed (LightFeed Agregator) '.VERSION_NAME.'</generator>';
+
+        usort($items, 'rssmaker_plugin_compare_event');
+        foreach($items as $item){
+            $xml .= '<item>
+				<title><![CDATA['.html_entity_decode($item->getTitle()).']]></title>
+				<link>'.$item->getLink().'</link>
+				<pubDate>'.date('r', gmstrftime($item->getPubdate())).'</pubDate>
+				<guid isPermaLink="true">'.$item->getLink().'</guid>
+
+				<description>
+				<![CDATA['.$item->getDescription().'
+				]]>
+				</description>
+
+				<content:encoded><![CDATA['.$item->getDescription().']]></content:encoded>
+				<dc:creator>'.(''==$item->getCreator()? 'Anonyme': $item->getCreator()).'</dc:creator>
+				</item>';
+        }
+        $xml .= '</channel></rss>';
+        echo($xml);
+    }
+}
+
+
 Plugin::addHook("menu_pre_folder_link", "rssmaker_plugin_folder_link");
 $ConfigManager = new Configuration();
 $ConfigManager->getAll();
-$link_head = $ConfigManager->get('root').'action.php?action=show_unread_rss';
-Plugin::addLink("alternate",$link_head, "application/rss+xml", "Unread RSS" );
+$link_unread_head = $ConfigManager->get('root').'action.php?action=show_unread_rss';
+$link_favorite_head = $ConfigManager->get('root').'action.php?action=show_favorite_rss';
+Plugin::addLink("alternate",$link_unread_head, "application/rss+xml", "Unread RSS" );
+Plugin::addLink("alternate",$link_favorite_head, "application/rss+xml", "Favorite RSS" );
 Plugin::addHook("action_post_case", "rssmaker_plugin_action");
 Plugin::addHook("action_post_case", "rssmaker_plugin_unread_action");
+Plugin::addHook("action_post_case", "rssmaker_plugin_favorite_action");
 
 $folderManager = new Folder();
 $folders = $folderManager->loadAll(array());
