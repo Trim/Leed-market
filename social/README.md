@@ -29,6 +29,7 @@ Instructions
 Version
 =======
 
+* v3.8.0  -  Nettoyage des urls si plugin urlClean actif
 * v3.7.2  -  correction appel post_action
 * v3.7.1  -  Diigo, correction d'encodage.
 * v3.7.0  -  Ajout partage sur Diigo

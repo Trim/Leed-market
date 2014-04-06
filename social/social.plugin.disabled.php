@@ -4,21 +4,23 @@
 @author Cobalt74 <http://www.cobestran.com>
 @link http://www.cobestran.com
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-@version 3.7.2
-@description Le plugin Social permet de partager les news avec son réseau social préféré (Twitter, Google+, Facebook, Delicious, Shaarli, Pocket, Instapaper, Mail, LinkedIn, Wallabag)
+@version 3.8.0
+@description Le plugin Social permet de partager les news avec son réseau social préféré (Twitter, Google+, Facebook, Delicious, Shaarli, Pocket, Instapaper, Mail, LinkedIn, Wallabag, Diigo)
 */
 
 function social_plugin_AddButton(&$event){
   $eventId = "social_".$event->getId();
-  //$link = $event->getLink();
-  
-  $requete = 'SELECT link, title FROM '.MYSQL_PREFIX.'event WHERE id = '.$event->getId();
-  $query = mysql_query($requete);
-  $result = mysql_fetch_row($query);
-  $link = $result[0];
-  $title = $result[1];
 
   $myUser = (isset($_SESSION['currentUser'])?unserialize($_SESSION['currentUser']):false);
+
+  // si plugin urlclean actif, netoyage des urls
+  if (function_exists('urlclean_plugin_link')){
+      $onEvents[] = &$event;
+      urlclean_plugin_link($onEvents);
+  }
+
+  $link = $event->getLink();
+  $title = $event->getTitle();
 
   $configurationManager = new Configuration();
   $configurationManager->getAll();
