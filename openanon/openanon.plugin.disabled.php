@@ -10,7 +10,7 @@
 */
 
 function openanon_plugin_button(&$event){
-	$requete = 'SELECT link FROM '.MYSQL_PREFIX.'event WHERE id = '.$event->getId();
+	$requete = 'SELECT link FROM `'.MYSQL_PREFIX.'event` WHERE id = '.$event->getId();
 	$query = mysql_query($requete);
 	$result = mysql_fetch_row($query);
 	$link = $result[0];
