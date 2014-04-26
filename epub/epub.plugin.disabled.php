@@ -5,7 +5,7 @@
 @link https://redmine.adorsaz.ch/projects/leed-market_
 @link git://adorsaz.ch/leed-market.git
 @licence LGPLv3
-@version 1.1.4
+@version 1.1.5
 @description Ce plugin permet de télécharger vos articles au format epub pour une lecture hors-ligne.
 */
 
@@ -14,6 +14,12 @@
  *  - TODO L10N : add right language in META of EPUB
  *  - TODO PHP 5.5.0 : marks TODO when php functions will be depreciated
  * */
+
+/* PHPePub use now namespace */
+use com\grandt\DublinCore;
+use com\grandt\EPub;
+use com\grandt\EPubChapterSplitter;
+use com\grandt\Zip;
 
 /** Includes **/
 include_once("./plugins/epub/PHPePub/EPub.php");

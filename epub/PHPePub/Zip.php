@@ -1,4 +1,8 @@
 <?php
+namespace com\grandt;
+
+use DirectoryIterator;
+use ZipArchive;
 /**
  * Class to create and manage a Zip file.
  *
@@ -6,17 +10,17 @@
  * and
  * http://www.pkware.com/documents/casestudies/APPNOTE.TXT Zip file specification.
  *
- * License: GNU LGPL, Attribution required for commercial implementations, requested for everything else.
+ * License: GNU LGPL 2.1.
  *
  * @author A. Grandt <php@grandt.com>
- * @copyright 2009-2013 A. Grandt
+ * @copyright 2009-2014 A. Grandt
  * @license GNU LGPL 2.1
  * @link http://www.phpclasses.org/package/6110
  * @link https://github.com/Grandt/PHPZip
- * @version 1.50
+ * @version 1.62
  */
 class Zip {
-    const VERSION = 1.50;
+    const VERSION = 1.62;
 
     const ZIP_LOCAL_FILE_HEADER = "\x50\x4b\x03\x04"; // Local file header signature
     const ZIP_CENTRAL_FILE_HEADER = "\x50\x4b\x01\x02"; // Central file header signature
@@ -27,6 +31,9 @@ class Zip {
 
     const ATTR_VERSION_TO_EXTRACT = "\x14\x00"; // Version needed to extract
     const ATTR_MADE_BY_VERSION = "\x1E\x03"; // Made By Version
+
+	// UID 1000, GID 0
+	const EXTRA_FIELD_NEW_UNIX_GUID = "\x75\x78\x0B\x00\x01\x04\xE8\x03\x00\x00\x04\x00\x00\x00\x00";
 
 	// Unix file types
 	const S_IFIFO  = 0010000; // named pipe (fifo)
@@ -89,6 +96,11 @@ class Zip {
     private $streamData = NULL;
     private $streamFileLength = 0;
 	private $streamExtFileAttr = null;
+	/**
+	 * A custom temporary folder, or a callable that returns a custom temporary file.
+	 * @var string|callable
+	 */
+	public static $temp = null;
 
     /**
      * Constructor.
@@ -236,7 +248,7 @@ class Zip {
             $this->zipflush();
         }
 
-        $this->buildZipEntry($filePath, $fileComment, $gpFlags, $gzType, $timestamp, $fileCRC32, $gzLength, $dataLength, self::EXT_FILE_ATTR_FILE);
+        $this->buildZipEntry($filePath, $fileComment, $gpFlags, $gzType, $timestamp, $fileCRC32, $gzLength, $dataLength, $extFileAttr);
 
         $this->zipwrite($gzData);
 
@@ -357,7 +369,7 @@ class Zip {
             $this->closeStream();
         }
 
-        $this->streamFile = tempnam(sys_get_temp_dir(), 'Zip');
+        $this->streamFile = self::getTemporaryFile();
         $this->streamData = fopen($this->streamFile, "wb");
         $this->streamFilePath = $filePath;
         $this->streamTimestamp = $timestamp;
@@ -381,11 +393,11 @@ class Zip {
 
         $length = fwrite($this->streamData, $data, strlen($data));
         if ($length != strlen($data)) {
-            die ("<p>Length mismatch</p>\n");
-        }
-        $this->streamFileLength += $length;
-
-        return $length;
+			die ("<p>File IO: Error writing; Length mismatch: Expected " . strlen($data) . " bytes, wrote " . ($length === FALSE ? "NONE!" : $length) . "</p>\n");
+		}
+		$this->streamFileLength += $length;
+        
+		return $length;
     }
 
     /**
@@ -423,7 +435,7 @@ class Zip {
             return FALSE;
         }
 
-        $tempzip = tempnam(sys_get_temp_dir(), 'ZipStream');
+        $tempzip = self::getTemporaryFile();
 
         $zip = new ZipArchive;
         if ($zip->open($tempzip) === TRUE) {
@@ -540,11 +552,13 @@ class Zip {
     /**
      * Send the archive as a zip download
      *
-     * @param string $fileName The name of the Zip archive, ie. "archive.zip".
-     * @param string $contentType Content mime type. Optional, defaults to "application/zip".
+     * @param String $fileName The name of the Zip archive, in ISO-8859-1 (or ASCII) encoding, ie. "archive.zip". Optional, defaults to NULL, which means that no ISO-8859-1 encoded file name will be specified.
+     * @param String $contentType Content mime type. Optional, defaults to "application/zip".
+     * @param String $utf8FileName The name of the Zip archive, in UTF-8 encoding. Optional, defaults to NULL, which means that no UTF-8 encoded file name will be specified.
+     * @param bool $inline Use Content-Disposition with "inline" instead of "attached". Optional, defaults to FALSE.
      * @return bool $success
      */
-    function sendZip($fileName, $contentType = "application/zip") {
+    function sendZip($fileName = null, $contentType = "application/zip", $utf8FileName = null, $inline = false) {
         if (!$this->isFinalized) {
             $this->finalize();
         }
@@ -552,7 +566,7 @@ class Zip {
         $headerFile = null;
         $headerLine = null;
         if (!headers_sent($headerFile, $headerLine) or die("<p><strong>Error:</strong> Unable to send file $fileName. HTML Headers have already been sent from <strong>$headerFile</strong> in line <strong>$headerLine</strong></p>")) {
-            if ((ob_get_contents() === FALSE || ob_get_contents() == '') or die("\n<p><strong>Error:</strong> Unable to send file <strong>$fileName.epub</strong>. Output buffer contains the following text (typically warnings or errors):<br>" . ob_get_contents() . "</p>")) {
+            if ((ob_get_contents() === FALSE || ob_get_contents() == '') or die("\n<p><strong>Error:</strong> Unable to send file <strong>$fileName</strong>. Output buffer contains the following text (typically warnings or errors):<br>" . htmlentities(ob_get_contents()) . "</p>")) {
                 if (ini_get('zlib.output_compression')) {
                     ini_set('zlib.output_compression', 'Off');
                 }
@@ -563,8 +577,19 @@ class Zip {
                 header("Accept-Ranges: bytes");
                 header("Connection: close");
                 header("Content-Type: " . $contentType);
-                header('Content-Disposition: attachment; filename="' . $fileName . '"');
-                header("Content-Transfer-Encoding: binary");
+                $cd = "Content-Disposition: ";
+                if ($inline) {
+                    $cd .= "inline";
+				} else{
+                    $cd .= "attached";
+				}
+                if ($fileName) {
+                    $cd .= '; filename="' . $fileName . '"';
+				}
+                if ($utf8FileName) {
+                    $cd .= "; filename*=UTF-8''" . rawurlencode($utf8FileName);
+				}
+                header($cd);
                 header("Content-Length: ". $this->getArchiveSize());
 
                 if (!is_resource($this->zipFile)) {
@@ -637,53 +662,74 @@ class Zip {
         $dosTime = $this->getDosTime($timestamp);
         $tsPack = pack("V", $timestamp);
 
-        $ux = "\x75\x78\x0B\x00\x01\x04\xE8\x03\x00\x00\x04\x00\x00\x00\x00";
-
         if (!isset($gpFlags) || strlen($gpFlags) != 2) {
             $gpFlags = "\x00\x00";
         }
 
         $isFileUTF8 = mb_check_encoding($filePath, "UTF-8") && !mb_check_encoding($filePath, "ASCII");
         $isCommentUTF8 = !empty($fileComment) && mb_check_encoding($fileComment, "UTF-8") && !mb_check_encoding($fileComment, "ASCII");
-        if ($isFileUTF8 || $isCommentUTF8) {
+		
+		$localExtraField = "";
+		$centralExtraField = "";
+		
+		if ($this->addExtraField) {
+            $localExtraField .= "\x55\x54\x09\x00\x03" . $tsPack . $tsPack . Zip::EXTRA_FIELD_NEW_UNIX_GUID;
+			$centralExtraField .= "\x55\x54\x05\x00\x03" . $tsPack . Zip::EXTRA_FIELD_NEW_UNIX_GUID;
+		}
+		
+		if ($isFileUTF8 || $isCommentUTF8) {
             $flag = 0;
             $gpFlagsV = unpack("vflags", $gpFlags);
             if (isset($gpFlagsV['flags'])) {
                 $flag = $gpFlagsV['flags'];
             }
             $gpFlags = pack("v", $flag | (1 << 11));
+			
+			if ($isFileUTF8) {
+				$utfPathExtraField = "\x75\x70"
+					. pack ("v", (5 + strlen($filePath)))
+					. "\x01" 
+					.  pack("V", crc32($filePath))
+					. $filePath;
+
+				$localExtraField .= $utfPathExtraField;
+				$centralExtraField .= $utfPathExtraField;
+			}
+			if ($isCommentUTF8) {
+				$centralExtraField .= "\x75\x63" // utf8 encoded file comment extra field
+					. pack ("v", (5 + strlen($fileComment)))
+					. "\x01"
+					. pack("V", crc32($fileComment))
+					. $fileComment;
+			}
         }
 
         $header = $gpFlags . $gzType . $dosTime. $fileCRC32
-        . pack("VVv", $gzLength, $dataLength, strlen($filePath)); // File name length
+			. pack("VVv", $gzLength, $dataLength, strlen($filePath)); // File name length
 
-        $zipEntry  = self::ZIP_LOCAL_FILE_HEADER;
-        $zipEntry .= self::ATTR_VERSION_TO_EXTRACT;
-        $zipEntry .= $header;
-        $zipEntry .= pack("v", ($this->addExtraField ? 28 : 0)); // Extra field length
-        $zipEntry .= $filePath; // FileName
-        // Extra fields
-        if ($this->addExtraField) {
-            $zipEntry .= "\x55\x54\x09\x00\x03" . $tsPack . $tsPack . $ux;
-        }
-        $this->zipwrite($zipEntry);
+        $zipEntry  = self::ZIP_LOCAL_FILE_HEADER
+			. self::ATTR_VERSION_TO_EXTRACT
+			. $header
+			. pack("v", strlen($localExtraField)) // Extra field length
+			. $filePath // FileName
+			. $localExtraField; // Extra fields
 
-        $cdEntry  = self::ZIP_CENTRAL_FILE_HEADER;
-        $cdEntry .= self::ATTR_MADE_BY_VERSION;
-        $cdEntry .= ($dataLength === 0 ? "\x0A\x00" : self::ATTR_VERSION_TO_EXTRACT);
-        $cdEntry .= $header;
-        $cdEntry .= pack("v", ($this->addExtraField ? 24 : 0)); // Extra field length
-        $cdEntry .= pack("v", $fileCommentLength); // File comment length
-        $cdEntry .= "\x00\x00"; // Disk number start
-        $cdEntry .= "\x00\x00"; // internal file attributes
-        $cdEntry .= pack("V", $extFileAttr); // External file attributes
-        $cdEntry .= pack("V", $this->offset); // Relative offset of local header
-        $cdEntry .= $filePath; // FileName
-        // Extra fields
-        if ($this->addExtraField) {
-            $cdEntry .= "\x55\x54\x05\x00\x03" . $tsPack . $ux;
-        }
-        if (!empty($fileComment)) {
+		$this->zipwrite($zipEntry);
+
+        $cdEntry  = self::ZIP_CENTRAL_FILE_HEADER
+			. self::ATTR_MADE_BY_VERSION
+			. ($dataLength === 0 ? "\x0A\x00" : self::ATTR_VERSION_TO_EXTRACT)
+			. $header
+			. pack("v", strlen($centralExtraField)) // Extra field length
+			. pack("v", $fileCommentLength) // File comment length
+			. "\x00\x00" // Disk number start
+			. "\x00\x00" // internal file attributes
+			. pack("V", $extFileAttr) // External file attributes
+			. pack("V", $this->offset) // Relative offset of local header
+			. $filePath // FileName
+			. $centralExtraField; // Extra fields
+
+		if (!empty($fileComment)) {
             $cdEntry .= $fileComment; // Comment
         }
 
@@ -729,7 +775,7 @@ class Zip {
 	 * Sometimes, when a path is generated from multiple fragments, 
 	 *  you can get something like "../data/html/../images/image.jpeg"
 	 * This will normalize that example path to "../data/images/image.jpeg"
-	 * 
+     *
      * @param string $path The path to clean up
      * @return string the clean path
      */
@@ -801,5 +847,18 @@ class Zip {
 		}
 		return FALSE;
 	}
+	/**
+	 * Returns the path to a temporary file.
+	 * @return string
+	 */
+	private static function getTemporaryFile() {
+		if(is_callable(self::$temp)) {
+			$temporaryFile = @call_user_func(self::$temp);
+			if(is_string($temporaryFile) && strlen($temporaryFile) && is_writable($temporaryFile)) {
+				return $temporaryFile;
+			}
+		}
+		$temporaryDirectory = (is_string(self::$temp) && strlen(self::$temp)) ? self::$temp : sys_get_temp_dir();
+		return tempnam($temporaryDirectory, 'Zip');
+	}
 }
-?>
