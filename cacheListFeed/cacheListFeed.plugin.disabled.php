@@ -1,10 +1,10 @@
 <?php
 /*
 @name cacheListFeed
-@author Cobalt74 <cobalt74@gmail.com>
+@author Cobalt74 <http://www.cobestran.com>
 @link http://www.cobestran.com
 @licence CC by nc sa http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-@version 2.1.1
+@version 2.1.2
 @description Le plugin cacheListFeed permet de cacher la liste des feed afin de lire les news en plein écran.
 */
 
@@ -22,7 +22,10 @@ function cacheListFeed_plugin_action (&$_) {
 	}
 	if ($_['action']=='getCacheListFeed'){
 		$myUser = (isset($_SESSION['currentUser'])?unserialize($_SESSION['currentUser']):false);
-		if($myUser==false) exit();
+		if($myUser==false) {
+            echo 1;
+            exit();
+        }
 		$configurationManager = new Configuration();
   		$configurationManager->getAll();
 		echo $configurationManager->get('cacheListFeed');

@@ -11,7 +11,7 @@
 
 function squelette_plugin_menu(&$myUser){
 	/* Ajoutez un code qui s'executera après le menu des flux ex :
-	
+
 	echo '<aside class="squeletteMenu">
 				
 				<h3 class="left">'._t('P_SQUELETTE_ALIRE').'</h3>
@@ -37,7 +37,7 @@ function squelette_plugin_menu(&$myUser){
 function squelette_plugin_action($_,$myUser){
 
 	/* Ajoutez un code qui s'executera en tant qu'action ex : 
-	
+	// ne rien mettre entre le début de la fonction et votre test sur l'action.
 	if($_['action']=='squelette_action'){
 		if($myUser==false) exit('Vous devez vous connecter pour cette action.');
 		if($_['state']=='add'){

@@ -14,6 +14,7 @@ Instructions
 Version
 =======
 
+* v1.4.0  -  prise en charge de la modification du thème marigolds sur les compteurs de nonlu
 * v1.3.0  -  prise en charge de la modification de l'affichage fait sur les non lus d'un feed
 * v1.2.1  -  correction d'une erreur dans les logs sur settings.php
 * v1.2.0  -  simplification et corrections

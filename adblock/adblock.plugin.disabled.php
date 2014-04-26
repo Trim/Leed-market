@@ -4,7 +4,7 @@
 @author Phyks <phyks@phyks.me>
 @link http://www.phyks.me
 @licence BEERWARE (See README.md file)
-@version 2.2.0
+@version 2.2.1
 @description The adblock plugin for leed allows to block embedded flash contents and / or images in feeds. You can set it fine-grained for each feed. You can also disable images only for mobile devices.
  */
 
@@ -69,7 +69,7 @@ function adblock_plugin_treat_events(&$events) {
         $filter_img = false;
     }
     $img_except_list = explode(',', trim($adblock_params["img_list"], "\t\n\r\0\x0B,"));
-    $img_except_list = adblock_trim_list($flash_except_list);
+    $img_except_list = adblock_trim_list($img_except_list);
 
     $elegant_degradation = (isset($adblock_params["elegant_degradation"]) && $adblock_params["elegant_degradation"] == "1") ? true : false;
 
@@ -244,10 +244,10 @@ function adblock_plugin_setting_bloc(&$myUser) {
 }
 
 function adblock_plugin_setting_update($_) {
-    $myUser = (isset($_SESSION['currentUser'])?unserialize($_SESSION['currentUser']):false);
-    if($myUser!=false) {
-        if($_['action'] == 'adblock_update') {
-            $flash_enabled = (int) $_['flash_adblock_enable'];
+
+     if($_['action'] == 'adblock_update') {
+         $myUser = (isset($_SESSION['currentUser'])?unserialize($_SESSION['currentUser']):false);
+         if($myUser!=false) {        $flash_enabled = (int) $_['flash_adblock_enable'];
             $flash_block = (int) $_['flash_adblock_default_behavior'];
             $flash_list = str_replace("\r\n", ",", trim($_["flash_adblock_list"]));
             $flash_list = str_replace("\n", ",", trim($flash_list));
