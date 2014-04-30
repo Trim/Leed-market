@@ -11,7 +11,6 @@
 
 /**
  * List of TODOs :
- *  - TODO L10N : add right language in META of EPUB
  *  - TODO PHP 5.5.0 : marks TODO when php functions will be depreciated
  * */
 
@@ -220,7 +219,7 @@ function create_epub($title, $qry_articles, $external_content){
 
         $book->setTitle($title);
         $book->setIdentifier("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."/".$title, EPub::IDENTIFIER_URI);
-        $book->setLanguage("fr"); // TODO L10N
+        $book->setLanguage(_t('P_EPUB_BOOK_LANGUAGE'));
         $book->setDescription(_t('P_EPUB_BOOK_DESCRIPTION'));
         //$book->addCSSFile("styles.css", "css1", $cssData); //TODO add Leed css ?
         //$book->setCoverImage("Cover.jpg", file_get_contents("demo/cover-image.jpg"), "image/jpeg");
