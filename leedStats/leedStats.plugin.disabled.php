@@ -26,11 +26,11 @@ function leedStats_plugin_setting_bloc(&$myUser){
 
     //Nombre global d'article lus / non lus / total / favoris
     $requete = 'SELECT
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'feed)as nbFeed,
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'event WHERE unread = 1)as nbUnread,
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'event WHERE unread = 0)as nbRead,
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'event) as nbTotal,
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'event WHERE favorite = 1)as nbFavorite
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'feed`) as nbFeed,
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'event` WHERE unread = 1) as nbUnread,
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'event` WHERE unread = 0) as nbRead,
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'event`) as nbTotal,
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'event` WHERE favorite = 1) as nbFavorite
                 ';
     $query = mysql_query($requete);
     if($query!=null){
@@ -62,11 +62,11 @@ function leedStats_plugin_setting_bloc(&$myUser){
     ';
     //Nombre global d'article lus / non lus / total / favoris
     $requete = 'SELECT name, count(1) as nbTotal,
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'event le2 WHERE le2.unread=1 and le1.feed = le2.feed) as nbUnread,
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'event le2 WHERE le2.unread=0 and le1.feed = le2.feed) as nbRead,
-                (SELECT count(1) FROM '.MYSQL_PREFIX.'event le2 WHERE le2.favorite=1 and le1.feed = le2.feed) as nbFavorite
-                FROM '.MYSQL_PREFIX.'feed lf1
-                INNER JOIN '.MYSQL_PREFIX.'event le1 on le1.feed = lf1.id
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'event` le2 WHERE le2.unread=1 and le1.feed = le2.feed) as nbUnread,
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'event` le2 WHERE le2.unread=0 and le1.feed = le2.feed) as nbRead,
+                (SELECT count(1) FROM `'.MYSQL_PREFIX.'event` le2 WHERE le2.favorite=1 and le1.feed = le2.feed) as nbFavorite
+                FROM `'.MYSQL_PREFIX.'feed` lf1
+                INNER JOIN `'.MYSQL_PREFIX.'event` le1 on le1.feed = lf1.id
                 GROUP BY name
                 ORDER BY name
                 ';
