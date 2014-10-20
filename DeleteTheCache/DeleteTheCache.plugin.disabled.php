@@ -4,7 +4,7 @@
 @author qwerty <qwerty@legtux.org>
 @link http://etudiant-libre.fr.nf
 @licence Tea Licence
-@version 1.0.1
+@version 1.0.2
 @description Vide le cache
 */
 
@@ -47,7 +47,7 @@ function clear_folder($folder, $skip_files=array()){
 
 
 function delcache_plugin_setting_link(&$feed){
-    echo '<a class="pointer" href="action.php?action=delcache" alt="Vider le cache de Leed" title="Vider le cache">Vider le cache</a>';
+    echo '<li><a class="toggle" href="action.php?action=delcache" alt="Vider le cache de Leed" title="Vider le cache">Vider le cache</a></li>';
 }
 
 function delcache_plugin_action(&$_){
