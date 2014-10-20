@@ -14,6 +14,7 @@ Instructions
 Version
 =======
 
+* v2.1.3  -  Corrige le même bug que la version 2.1.1, mais dans une autre situation
 * v2.1.2  -  les utilisateurs déconnectés ne chargent pas les préférences de l'utilisateur
 * v2.1.1  -  Utilise la CSS dynamique pour choisir la largeur de l'affichage des articles quand le menu est affiché
 * v2.1.0  -  ajout d'un controle (suite à une erreur dans la console js)
