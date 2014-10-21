@@ -22,12 +22,12 @@ function shaarleed_plugin_button(&$event){
 	$title = $result[1];
   
 	echo '
-	<a title="partager sur shaarli" target="_blank" href="'.$shareOption.'?post='.rawurlencode($link).'&title='.$title.'&amp;source=bookmarklet">Shaare!</a>
+	<a title="'._t('P_SHARLEED_SHARE_WITH_SHAARLI').'" target="_blank" href="'.$shareOption.'?post='.rawurlencode($link).'&title='.$title.'&amp;source=bookmarklet">'._t('P_SHARLEED_SHAARLI_EXCLAMATION').'</a>
 	';
 }
 
 function shaarleed_plugin_setting_link(&$myUser){
-	echo '<li><a class="toggle" href="#shaarli">Shaarli</a></li>';
+	echo '<li><a class="toggle" href="#shaarli">'._t('P_SHARLEED_SHAARLI_EXCLAMATION').'</a></li>';
 }
 
 function shaarleed_plugin_setting_bloc(&$myUser){
@@ -36,14 +36,14 @@ function shaarleed_plugin_setting_bloc(&$myUser){
 	echo '
 	<section id="shaarli" name="shaarli" class="shaarli">
 		<form action="action.php?action=shaarleed_update" method="POST">
-		<h2>Plugin Shaarli</h2>
+		<h2>'._t('P_SHARLEED_PLUGIN_TITLE').'</h2>
 		<p class="shaarliBlock">
-		<label for="plugin_shaarli_link">Lien vers votre shaarli :</label> 
+		<label for="plugin_shaarli_link">'._t('P_SHARLEED_SHAARLI_LINK').'</label> 
 		<input style="width:50%;" type="text" placeholder="http://mon.domaine.com/shaarli/" value="'.$configurationManager->get('plugin_shaarli_link').'" id="plugin_shaarli_link" name="plugin_shaarli_link" />
-		<input type="submit" class="button" value="Enregistrer"><br/>
+		<input type="submit" class="button" value="'._t('P_SHARLEED_SAVE').'"><br/>
 		</p>
 		
-		<strong>Nb:</strong> cette option affichera un bouton à côté de chaque news pour vous proposer de la partager/stocker sur le gestionnaire de liens shaarli.
+		<strong>'._t('P_SHARLEED_NB').'</strong> '._t('P_SHARLEED_NB_INFO').'
 		</form>
 	</section>
 	';

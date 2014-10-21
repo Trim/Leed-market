@@ -1,0 +1,11 @@
+{
+"P_SHARLEED_SHARE_WITH_SHAARLI":"partager sur Shaarli",
+"P_SHARLEED_SHAARLI_EXCLAMATION":"Shaare !",
+"P_SHARLEED_SHAARLI":"Shaarli",
+"P_SHARLEED_PLUGIN_TITLE":"Plugin Shaarli",
+"P_SHARLEED_SHAARLI_LINK":"Lien vers votre Shaarli :",
+"P_SHARLEED_SAVE":"Enregistrer",
+"P_SHARLEED_NB":"NB:",
+"P_SHARLEED_NB_INFO":"Cette option affichera un bouton à côté de chaque news pour vous proposer de la partager/stocker sur le gestionnaire de liens shaarli.",
+"P_SHARLEED_CONNECTION_ERROR":"Vous devez être connecté pour cette action."
+}
