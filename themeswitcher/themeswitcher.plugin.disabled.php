@@ -4,7 +4,7 @@
 @author Simounet <contact@simounet.net>
 @link http://www.simounet.net
 @licence CC BY-SA
-@version 1.0.0
+@version 1.0.1
 @description Le plugin ThemeSwitcher permet de changer de thème via la page de gestion.
 */
 
@@ -34,6 +34,9 @@ function themeswitcher_plugin_AddForm(){
 }
 
 function themeswitcher_plugin_change(){
+	$myUser = (isset($_SESSION['currentUser'])?unserialize($_SESSION['currentUser']):false);
+	if($myUser===false) exit(_t('P_THEMESWITCHER_CONNECTION_ERROR'));
+
     $fileName = 'constant.php';
     $searchfor = 'marigolds';
     $file = file_get_contents($fileName);
