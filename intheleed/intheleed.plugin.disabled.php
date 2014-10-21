@@ -22,13 +22,13 @@ function intheleed_plugin_button(&$event){
 	$title = $result[1];
   
 	echo '
-	<a title="partager sur poche" target="_blank" href="'.$shareOption.'?action=add&url='.base64_encode($link).'">Poche !</a>
+	<a title="'._t('P_INTHELEED_SHARE_WITH_POCHE').'" target="_blank" href="'.$shareOption.'?action=add&url='.base64_encode($link).'">'._t('P_INTHELEED_POCHE_EXCLAMATION').'</a>
 	';
 }
 
 function intheleed_plugin_setting_link(&$myUser){
 	echo '
-	<li class="pointer" onclick="$(\'#main section\').hide();$(\'#main #pocheBloc\').fadeToggle(200);">poche</li>
+	<li class="pointer" onclick="$(\'#main section\').hide();$(\'#main #pocheBloc\').fadeToggle(200);">'._t('P_INTHELEED_POCHE').'</li>
 	';
 }
 
@@ -38,14 +38,14 @@ function intheleed_plugin_setting_bloc(&$myUser){
 	echo '
 	<section id="pocheBloc" style="display:none;">
 		<form action="action.php?action=intheleed_update" method="POST">
-		<h2>Plugin poche</h2>
+		<h2>'._t('P_INTHELEED_PLUGIN_TITLE').'</h2>
 		<p class="pocheBlock">
-		<label for="plugin_poche_link">Lien vers votre poche :</label> 
+		<label for="plugin_poche_link">'._t('P_INTHELEED_POCHE_LINK').'</label> 
 		<input style="width:50%;" type="text" placeholder="http://poche.mondomaine.com" value="'.$configurationManager->get('plugin_poche_link').'" id="plugin_poche_link" name="plugin_poche_link" />
-		<input type="submit" class="button" value="Enregistrer"><br/>
+		<input type="submit" class="button" value="'._t('P_INTHELEED_SAVE').'"><br/>
 		</p>
 		
-		<strong>Nb:</strong> cette option affichera un bouton à côté de chaque article pour vous proposer de le stocker sur poche.
+		<strong>'._t('P_INTHELEED_NB').'</strong> '._t('P_INTHELEED_NB_INFO').'
 		</form>
 	</section>
 	';
