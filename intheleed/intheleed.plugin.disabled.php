@@ -4,7 +4,7 @@
 @author GAULUPEAU Jonathan <jo.gaulupeau@gmail.com>
 @link https://bitbucket.org/jogaulupeau
 @licence GPLv3
-@version 1.0.1
+@version 1.0.2
 @description Le plugin intheleed permet de stocker un lien dans son <a target="_blank" href="http://inthepoche.com">poche</a>. Plugin basé sur un sharleed par Idleman.
 */
 
@@ -52,6 +52,9 @@ function intheleed_plugin_setting_bloc(&$myUser){
 }
 
 function intheleed_plugin_update($_){
+	$myUser = (isset($_SESSION['currentUser'])?unserialize($_SESSION['currentUser']):false);
+	if($myUser===false) exit(_t('P_INTHELEED_CONNECTION_ERROR'));
+	
 	if($_['action']=='intheleed_update'){
         $configurationManager = new Configuration();
         $configurationManager->put('plugin_poche_link',$_['plugin_poche_link']);
