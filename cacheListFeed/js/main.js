@@ -34,6 +34,8 @@ function cacheListFeed_toggle_div() {
 				type: 'post',
 				data: 'cacher=0'
 			});
+  // On scroll à nouveau au main pour voir le début de l'article (utile sur les smartphones)
+  document.getElementById('main').scrollIntoView(true);
   }
 }
 
