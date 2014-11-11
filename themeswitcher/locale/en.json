@@ -1,0 +1,6 @@
+{
+"P_THEMESWITCHER_SWITCH_THEME":"Switch theme",
+"P_THEMESWITCHER_SAVE":"Save",
+"P_THEMESWITCHER_NOWRITE_ERROR":"It seems you don't have permission to write the constant.php file. Please, run the command <code>chmod 664 constant.php</code>",
+"P_THEMESWITCHER_CONNECTION_ERROR":"You have to be logged to do this action"
+}

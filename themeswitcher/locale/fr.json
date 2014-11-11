@@ -1,0 +1,6 @@
+{
+"P_THEMESWITCHER_SWITCH_THEME":"Changer de thème",
+"P_THEMESWITCHER_SAVE":"Enregistrer",
+"P_THEMESWITCHER_NOWRITE_ERROR":"Vous ne devez pas avoir les droits d'écriture sur le fichier constant.php. Effectuez un <code>chmod 664 constant.php</code>",
+"P_THEMESWITCHER_CONNECTION_ERROR":"Vous devez être connecté pour cette action"
+}
